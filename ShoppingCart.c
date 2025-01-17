@@ -7,7 +7,14 @@
 
 void	initCart(ShoppingCart* pCart)
 {
-	L_init(&(pCart->shoppingItemList));
+	if (!pCart)
+		return;  
+
+	if (!L_init(&(pCart->shoppingItemList)))
+		{
+			printf("Failed to initialize shopping cart!\n");
+			return;
+		}
 }
 
 float	getTotalPrice(const ShoppingCart* pCart)
@@ -18,7 +25,7 @@ float	getTotalPrice(const ShoppingCart* pCart)
 	if (temp == NULL)
 		return price;
 
-	while (temp != NULL);
+	while (temp != NULL)
 	{
 		pItem = temp->key;
 		price += (pItem->price * pItem->count);
@@ -55,7 +62,7 @@ int		addItemToCart(ShoppingCart* pCart, char* barcode, float price, int count)
 	return 1;
 }
 
-float	printShoppingCart(const ShoppingCart* pCart)
+void	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT WHY FLOAT??????????????? (DOR CHANGE TO VOID)
 {
 	//ShoppingItem* pItem;
 	//NODE* pCartTemp = pCart->shoppingItemList.head.next;
@@ -72,15 +79,17 @@ float	printShoppingCart(const ShoppingCart* pCart)
 	*/
 	price = getTotalPrice(pCart);
 	printf("Total bill to pay: %.2f\n", price);
-	return price;
 }
 
 
 ShoppingItem*	getItemByBarocde(ShoppingCart* pCart, char* barcode)
-{
-	NODE* temp = L_find(&(pCart->shoppingItemList.head),barcode, compareItemByBarcode);
-
-	return temp->key;
+{  
+	//DOR ADDED!!!!!!!!!!!!!!!!
+	NODE* temp = &pCart->shoppingItemList.head;
+	if (!temp->next)
+		return NULL;
+	NODE* temp2 = L_find(temp,barcode, compareItemByBarcode);
+	return temp2->key;
 	/*
 	for (int i = 0; i < pCart->count; i++)
 	{

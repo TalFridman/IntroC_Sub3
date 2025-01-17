@@ -171,7 +171,6 @@ int	doShopping(SuperMarket* pMarket)
 	Customer* pCustomer = getCustomerShopPay(pMarket);
 	if (!pCustomer)
 		return 0;
-
 	if (pCustomer->pCart == NULL)
 	{
 		pCustomer->pCart = (ShoppingCart*)malloc(sizeof(ShoppingCart));
@@ -180,10 +179,14 @@ int	doShopping(SuperMarket* pMarket)
 		initCart(pCustomer->pCart);
 	}
 	fillCart(pMarket, pCustomer->pCart);
-	if (pCustomer->pCart->count == 0) //did not buy any thing
+	//if (pCustomer->pCart->count == 0)                                             //DOR CHANGED
+	NODE* temp = pCustomer->pCart->shoppingItemList.head.next;
+	if(!(temp))                                                                    //did not buy any thing
 	{
-		free(pCustomer->pCart);
-		pCustomer->pCart = NULL;
+		//free(pCustomer->pCart);
+		//pCustomer->pCart = NULL;
+		freeShoppingCart(pCustomer->pCart);                                                //DOR CHANGED
+		pCustomer->pCart->shoppingItemList.head.next = NULL;
 	}
 	printf("---------- Shopping ended ----------\n");
 	return 1;
@@ -194,7 +197,7 @@ Customer*	doPrintCart(SuperMarket* pMarket)
 	Customer* pCustomer = getCustomerShopPay(pMarket);
 	if (!pCustomer)
 		return NULL;
-	if (pCustomer->pCart == NULL)
+	if (pCustomer->pCart->shoppingItemList.head.next == NULL)                                                //DOR CHANGED
 	{
 		printf("Customer cart is empty\n");
 		return NULL;
@@ -312,13 +315,27 @@ void fillCart(SuperMarket* pMarket, ShoppingCart* pCart)
 
 void clearCart(SuperMarket* pMarket, Customer* pCustomer)
 {
-	if (pCustomer->pCart == NULL)
+	////// מעלה בחזרה את הכמות של המוצר - האם צריך לעשות קול ביי רפרנס או כמו שעשיתי
+
+	//if (pCustomer->pCart == NULL)                                           //DOR CHANGED
+	NODE* temp = pCustomer->pCart->shoppingItemList.head.next;
+	if (!temp)
 		return;
+	/*                                                                       //DOR CHANGED
 	for (int i = 0; i < pCustomer->pCart->count; i++)
 	{
 		Product* pProd = getProductByBarcode(pMarket, pCustomer->pCart->itemArr[i]->barcode);
 		if (pProd)
 			pProd->count += pCustomer->pCart->itemArr[i]->count;
+	}
+	*/
+	ShoppingItem* tempShoppingItem = temp->key;
+	while (temp)
+	{
+		Product* pProd = getProductByBarcode(pMarket, tempShoppingItem->barcode);
+		if (pProd)
+			pProd->count += tempShoppingItem->count;
+		temp = temp->next;
 	}
 }
 
