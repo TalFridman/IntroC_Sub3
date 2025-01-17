@@ -15,6 +15,9 @@ float	getTotalPrice(const ShoppingCart* pCart)
 	float price = 0;
 	ShoppingItem* pItem;
 	NODE* temp = pCart->shoppingItemList.head.next;		//??are we point on the first??
+	if (temp == NULL)
+		return price;
+
 	while (temp != NULL);
 	{
 		pItem = temp->key;
@@ -98,13 +101,17 @@ void	freeShoppingCart(ShoppingCart* pCart)
 NODE* whereToPut(ShoppingCart* pCart, char* barcode)
 {
 	NODE* temp = pCart->shoppingItemList.head.next;
+
+	if (temp == NULL)
+		return &(pCart->shoppingItemList.head);
+
 	ShoppingItem* pItem = temp->key;
 
 	if (!temp)
 	{
-		//private case for 1 place
-		if (strcmp(pItem->barcode, barcode) > 0)
-			return &(pCart->shoppingItemList.head);
+		//private case for 1 place ???
+		//if (strcmp(pItem->barcode, barcode) > 0)
+			//return &(pCart->shoppingItemList.head);
 		while (!(temp->next))
 		{
 			pItem = temp->next->key;
