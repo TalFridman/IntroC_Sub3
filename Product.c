@@ -185,3 +185,30 @@ void	freeProduct(Product* pProduct)
 {
 	//nothing to free!!!!
 }
+
+int		compareProductByName(const void* pP1, const void* pP2)
+{
+	const Product* Product1 = *(Product**)pP1;
+	const Product* Product2 = *(Product**)pP2;
+	return strcmp(Product1->name, Product2->name);
+
+}
+
+int		compareProductByPrice(const void* pP1, const void* pP2)
+{
+	const Product* Product1 = *(Product**)pP1;
+	const Product* Product2 = *(Product**)pP2;
+	if (Product1->price > Product2->price)
+		return 1;
+	else if (Product1->price < Product2->price)
+		return -1;
+	else
+		return 0;
+}
+
+int		compareProductByCount(const void* pP1, const void* pP2)
+{
+	const Product* Product1 = *(Product**)pP1;
+	const Product* Product2 = *(Product**)pP2;
+	return Product1->count - Product2->count;
+}

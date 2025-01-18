@@ -4,7 +4,7 @@
 #include "ShoppingCart.h"
 
 typedef enum { eByName, eByCount, eByPrice, eNumOfSorts } eSort;
-const char* sortOptions[eNumOfSorts] = { "Sort By Name", "Sort By Count", "Sort By Price"};
+
 
 typedef struct
 {
@@ -51,4 +51,7 @@ void		freeProducts(SuperMarket* pMarket);
 void		freeCustomers(SuperMarket* pMarket);
 
 void	sortProductsByAtt(SuperMarket* pMarket);
+eSort	getSortedType();
 void	searchProductByAtt(SuperMarket* pMarket);
+
+void	productSearchGeneric(SuperMarket* pMarket, int (*compare)(const void*, const void*));

@@ -8,10 +8,13 @@
 #include "General.h"
 #include "ShoppingCart.h"
 
+static const char* sortOptions[eNumOfSorts] = { "Sort By Name", "Sort By Count", "Sort By Price" };
+
+
 
 int		initSuperMarket(SuperMarket* pMarket)
 {
-	pMarket->productArrSortBy = eNofProductType;       // Default - Non Sorted!
+	pMarket->productArrSortBy = eNumOfSorts;       // Default - Non Sorted!
 	pMarket->customerCount = 0;
 	pMarket->customerArr = NULL;
 	pMarket->productCount = 0;
@@ -417,27 +420,62 @@ void freeCustomers(SuperMarket* pMarket)
 
 void sortProductsByAtt(SuperMarket* pMarket)
 {
-	eSort option = getSortType();
+	if (pMarket->productCount == 0)
+	{
+		printf("\nNo Products yet!\n");
+		return;
+	}
+	eSort option = getSortedType();
 	switch (option)
 	{
 	case eByName:
 		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByName);
-		break;
-
-	case eByPrice:
-		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByPrice);
+		pMarket->productArrSortBy = 0;
 		break;
 
 	case eByCount:
 		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByCount);
+		pMarket->productArrSortBy = 1;
+		break;
+
+	case eByPrice:
+		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByPrice);
+		pMarket->productArrSortBy = 2;
 		break;
 	}
 }
 
 void searchProductByAtt(SuperMarket* pMarket)
 {
-	if (pMarket->productArrSortBy == eNumOfSorts)
+	if (pMarket->productCount == 0)
+	{
+		printf("\nNo Products yet!\n");
+		return;
+	}
+	eSort attribute = pMarket->productArrSortBy;
+	if (attribute == eNumOfSorts)
+	{
 		printf("Cannot search not sorted!");
+		return;
+	}
+	else
+	{
+		switch (attribute)
+		{
+		case eByName:
+			productSearchGeneric(pMarket, compareProductByName);
+			break;
+
+		case eByPrice:
+			productSearchGeneric(pMarket, compareProductByPrice);
+			break;
+
+		case eByCount:
+			productSearchGeneric(pMarket, compareProductByCount);
+			break;
+		}
+	}
+	
 }
 
 void	getUniquBarcode(char* barcode, SuperMarket* pMarket)
@@ -487,7 +525,7 @@ Customer* FindCustomerById(SuperMarket* pMarket, const char* id)
 }
 
 
-eSort getSortType()
+eSort getSortedType()
 {
 	int option;
 
@@ -502,4 +540,24 @@ eSort getSortType()
 	getchar();
 
 	return (eSort)option;
+}
+
+
+void	productSearchGeneric(SuperMarket* pMarket, int (*compare)(const void*, const void*))
+{
+	Product tempPro;
+	Product* pTempPro = &tempPro;
+	Product** pFound;
+	printf("Please write product name to search:\n");
+	scanf("%s", tempPro.name);
+
+	pFound = (Product**)bsearch(&pTempPro, pMarket->productArr, pMarket->productCount, sizeof(Product*), compare);
+	if (!pFound)
+		printf("Product not found!\n");
+	else
+	{
+		printf("Product found!\n");
+		printProduct(*pFound);
+	}
+	
 }
