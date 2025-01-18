@@ -3,6 +3,9 @@
 #include "Product.h"
 #include "ShoppingCart.h"
 
+typedef enum { eByName, eByCount, eByPrice, eNumOfSorts } eSort;
+const char* sortOptions[eNumOfSorts] = { "Sort By Name", "Sort By Count", "Sort By Price"};
+
 typedef struct
 {
 	char*		name;
@@ -10,6 +13,7 @@ typedef struct
 	int			customerCount;
 	Product**	productArr;
 	int			productCount;
+	eSort		productArrSortBy;
 }SuperMarket;
 
 
@@ -46,3 +50,5 @@ void		freeMarket(SuperMarket* pMarket);
 void		freeProducts(SuperMarket* pMarket);
 void		freeCustomers(SuperMarket* pMarket);
 
+void	sortProductsByAtt(SuperMarket* pMarket);
+void	searchProductByAtt(SuperMarket* pMarket);

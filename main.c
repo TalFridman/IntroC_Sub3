@@ -57,6 +57,14 @@ int main()
 		case ePrintProductByType:
 			printProductByType(&market);
 			break;
+		
+		case eSortProducts:
+			sortProductsByAtt(&market);
+			break;
+
+		case eSearchProductByAttribute:
+			searchProductByAtt(&market);
+			break;
 
 		case EXIT:
 			printf("Bye bye\n");

@@ -11,6 +11,7 @@
 
 int		initSuperMarket(SuperMarket* pMarket)
 {
+	pMarket->productArrSortBy = eNofProductType;       // Default - Non Sorted!
 	pMarket->customerCount = 0;
 	pMarket->customerArr = NULL;
 	pMarket->productCount = 0;
@@ -414,6 +415,31 @@ void freeCustomers(SuperMarket* pMarket)
 	free(pMarket->customerArr);
 }
 
+void sortProductsByAtt(SuperMarket* pMarket)
+{
+	eSort option = getSortType();
+	switch (option)
+	{
+	case eByName:
+		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByName);
+		break;
+
+	case eByPrice:
+		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByPrice);
+		break;
+
+	case eByCount:
+		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByCount);
+		break;
+	}
+}
+
+void searchProductByAtt(SuperMarket* pMarket)
+{
+	if (pMarket->productArrSortBy == eNumOfSorts)
+		printf("Cannot search not sorted!");
+}
+
 void	getUniquBarcode(char* barcode, SuperMarket* pMarket)
 {
 	int cont = 1;
@@ -458,4 +484,22 @@ Customer* FindCustomerById(SuperMarket* pMarket, const char* id)
 			return &pMarket->customerArr[i];
 	}
 	return  NULL;
+}
+
+
+eSort getSortType()
+{
+	int option;
+
+	printf("\n");
+	do {
+		printf("Please enter one of the following types for sort: \n");
+		for (int i = 0; i < eNumOfSorts ; i++)
+			printf("%d for %s\n", i, sortOptions[i]);
+		scanf("%d", &option);
+	} while (option < 0 || option >= eNumOfSorts);
+
+	getchar();
+
+	return (eSort)option;
 }
