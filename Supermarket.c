@@ -131,21 +131,32 @@ int isCustomerIdUnique(const SuperMarket* pMarket, const char* id)
 int		addCustomer(SuperMarket* pMarket)
 {
 	Customer cust = { 0 };
+	char choice;
+	printf("Are you club member? y/Y\n");
+	scanf(" %c", &choice);
+	if (tolower(choice) == 'y')
+	{
+		initCustomer(&cust);
+		//add club member customer  ????
+	}
+	else
+	{
 
-	do {
-		freeCustomer(&cust);
-		if (!initCustomer(&cust))
-		{
+		do {
 			freeCustomer(&cust);
+			if (!initCustomer(&cust))
+			{
+				freeCustomer(&cust);
+				return 0;
+			}
+		} while (!isCustomerIdUnique(pMarket, cust.id));
+
+		if (isCustomerInMarket(pMarket, &cust))
+		{
+			printf("This customer already in market\n");
+			free(cust.name);
 			return 0;
 		}
-	} while (!isCustomerIdUnique(pMarket, cust.id));
-
-	if (isCustomerInMarket(pMarket, &cust))
-	{
-		printf("This customer already in market\n");
-		free(cust.name);
-		return 0;
 	}
 
 	pMarket->customerArr = (Customer*)safeRealloc(pMarket->customerArr, (pMarket->customerCount + 1) * sizeof(Customer));
@@ -430,17 +441,17 @@ void sortProductsByAtt(SuperMarket* pMarket)
 	{
 	case eByName:
 		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByName);
-		pMarket->productArrSortBy = 0;
+		pMarket->productArrSortBy = eByName;
 		break;
 
 	case eByCount:
 		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByCount);
-		pMarket->productArrSortBy = 1;
+		pMarket->productArrSortBy = eByCount;
 		break;
 
 	case eByPrice:
 		qsort(pMarket->productArr, pMarket->productCount, sizeof(Product*), compareProductByPrice);
-		pMarket->productArrSortBy = 2;
+		pMarket->productArrSortBy = eByPrice;
 		break;
 	}
 }
@@ -548,8 +559,13 @@ void	productSearchGeneric(SuperMarket* pMarket, int (*compare)(const void*, cons
 	Product tempPro;
 	Product* pTempPro = &tempPro;
 	Product** pFound;
-	printf("Please write product name to search:\n");
-	scanf("%s", tempPro.name);
+	printf("Please write product to search that %s:\n", sortOptions[pMarket->productArrSortBy]);
+	if(pMarket->productArrSortBy == eByName)
+		scanf("%s", tempPro.name);
+	else if (pMarket->productArrSortBy == eByCount)
+		scanf("%d", &tempPro.count);
+	else 
+		scanf("%f", &tempPro.price);
 
 	pFound = (Product**)bsearch(&pTempPro, pMarket->productArr, pMarket->productCount, sizeof(Product*), compare);
 	if (!pFound)

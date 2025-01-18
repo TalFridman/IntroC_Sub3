@@ -10,6 +10,7 @@ typedef struct
 	char*			id;
 	char*			name;
 	ShoppingCart*	pCart;
+	void*			pDerived;
 }Customer;
 
 int		initCustomer(Customer* pCustomer);
@@ -19,10 +20,8 @@ void	printCustomer(const Customer* pCustomer);
 int		isCustomerIdValid(const char* id);
 
 int		isCustomerById(const Customer* pCust, const char* id);
-//int		isCustomersNameValid(const char* name);
 void	getNamePart(char* part, const char* msg);
 void	upperLowerCustomerName(char* name);
-//char*	combineFirstLast(char*  firstName, char* lastName);
 char*	combineFirstLast(char** parts);
 void	pay(Customer* pCustomer);
 void	cancelShopping(Customer* pCustomer);

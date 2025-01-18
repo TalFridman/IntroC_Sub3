@@ -36,7 +36,6 @@ void			updateProductCount(Product* pProduct);
 void			freeProduct(Product* pProduct);
 
 
-
 int		compareProductByName(const void* pP1, const void* pP2);
 int		compareProductByPrice(const void* pP1, const void* pP2);
 int		compareProductByCount(const void* pP1, const void* pP2);

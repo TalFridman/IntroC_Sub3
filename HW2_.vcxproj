@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClubMember.c" />
     <ClCompile Include="Customer.c" />
     <ClCompile Include="Date.c" />
     <ClCompile Include="General.c" />
@@ -137,7 +138,9 @@
     <ClCompile Include="Supermarket.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClubMember.h" />
     <ClInclude Include="Customer.h" />
+    <ClInclude Include="CustomerVTable.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="def.h" />
     <ClInclude Include="General.h" />
