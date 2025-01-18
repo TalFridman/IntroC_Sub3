@@ -21,7 +21,7 @@ float	getTotalPrice(const ShoppingCart* pCart)
 {
 	float price = 0;
 	ShoppingItem* pItem;
-	NODE* temp = pCart->shoppingItemList.head.next;		//??are we point on the first??
+	NODE* temp = pCart->shoppingItemList.head.next;	
 	if (temp == NULL)
 		return price;
 
@@ -88,7 +88,9 @@ ShoppingItem*	getItemByBarocde(ShoppingCart* pCart, char* barcode)
 	NODE* temp = &pCart->shoppingItemList.head;
 	if (!temp->next)
 		return NULL;
-	NODE* temp2 = L_find(temp,barcode, compareItemByBarcode);
+	NODE* temp2 = L_find(temp->next,barcode, compareItemByBarcode);
+	if (!temp2)
+		return NULL;
 	return temp2->key;
 	/*
 	for (int i = 0; i < pCart->count; i++)
@@ -109,28 +111,23 @@ void	freeShoppingCart(ShoppingCart* pCart)
 
 NODE* whereToPut(ShoppingCart* pCart, char* barcode)
 {
-	NODE* temp = pCart->shoppingItemList.head.next;
+	NODE* prev = &(pCart->shoppingItemList.head);
+	NODE* temp = prev->next;
 
-	if (temp == NULL)
-		return &(pCart->shoppingItemList.head);
-
-	ShoppingItem* pItem = temp->key;
-
-	if (!temp)
+	while (temp != NULL)
 	{
-		//private case for 1 place ???
-		//if (strcmp(pItem->barcode, barcode) > 0)
-			//return &(pCart->shoppingItemList.head);
-		while (!(temp->next))
-		{
-			pItem = temp->next->key;
-			if (strcmp(pItem->barcode, barcode) > 0)
-				break;
-			temp = temp->next;
-		}
+		ShoppingItem* pItem = temp->key;
+
+		if (strcmp(pItem->barcode, barcode) > 0)
+			break;
+
+		prev = temp;
+		temp = temp->next;
 	}
-	return temp;
+
+	return prev; 
 }
+
 
 
 int compareItemByBarcode(void* item, void* barcode)
