@@ -172,3 +172,9 @@ void toLowerStr(char* str)
 		str++;
 	}
 }
+
+void generalArrayFunction(void* arr, int count, size_t typeSize, void (*f)(void* element))
+{
+	for (int i = 0; i < count; i++)
+		f(*(void**)((char*)arr + i * typeSize));
+}

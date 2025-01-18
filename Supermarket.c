@@ -262,8 +262,10 @@ void	printAllProducts(const SuperMarket* pMarket)
 	printf("%-20s %-10s %-20s %-15s\n", "Type", "Price", "Count In Stoke", "Expiry Date");
 	printf("-------------------------------------------------------------------------------------------------\n");
 
-	for (int i = 0; i < pMarket->productCount; i++)
-		printProduct(pMarket->productArr[i]);
+	generalArrayFunction(pMarket->productArr, pMarket->productCount, sizeof(Product*), printProduct);
+
+	//for (int i = 0; i < pMarket->productCount; i++)
+		//printProduct(pMarket->productArr[i]);
 }
 
 void	printAllCustomers(const SuperMarket* pMarket)

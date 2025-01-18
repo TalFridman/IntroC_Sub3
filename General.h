@@ -18,3 +18,4 @@ int		checkEmptyString(char* str);
 void*	safeRealloc(void* ptr, size_t size);
 int		checkAlphaSpaceStr(const char* str);
 void	toLowerStr(char* str);
+void	generalArrayFunction(void* arr, int count, size_t typeSize, void(*f)(void* element));
