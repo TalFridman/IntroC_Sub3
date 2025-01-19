@@ -1,5 +1,7 @@
 #pragma once
 #include "ShoppingCart.h"
+#include "CustomerVTable.h"
+
 
 #define CUSTOMER_ID_LENGTH 9
 #define NAMES_SEP " "
@@ -11,6 +13,7 @@ typedef struct
 	char*			name;
 	ShoppingCart*	pCart;
 	void*			pDerived;
+	CustomerVTable	vTable;
 }Customer;
 
 int		initCustomer(Customer* pCustomer);

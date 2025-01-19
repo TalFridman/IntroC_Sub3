@@ -7,6 +7,7 @@
 #include "Customer.h"
 #include "General.h"
 #include "ShoppingCart.h"
+#include "ClubMember.h"
 
 static const char* sortOptions[eNumOfSorts] = { "Sort By Name", "Sort By Count", "Sort By Price" };
 
@@ -207,7 +208,7 @@ int	doShopping(SuperMarket* pMarket)
 	return 1;
 }
 
-Customer*	doPrintCart(SuperMarket* pMarket)
+Customer*	doPrintCart(SuperMarket* pMarket)                            // ASK EFRAT WHY REUTRN CUSTOMER POINTER
 {
 	Customer* pCustomer = getCustomerShopPay(pMarket);
 	if (!pCustomer)
@@ -217,7 +218,15 @@ Customer*	doPrintCart(SuperMarket* pMarket)
 		printf("Customer cart is empty\n");
 		return NULL;
 	}
-	printShoppingCart(pCustomer->pCart);
+	float totalPrice = printShoppingCart(pCustomer->pCart);
+	if (!pCustomer->pDerived)
+		printf("for %s is %.2f", pCustomer->name, totalPrice);
+	else
+	{
+		const ClubMember* pClubMember = (ClubMember*)pCustomer->pDerived;
+		float precentDis = calculatePrice(pClubMember, &totalPrice);
+		printf("for %s if %.2f, after discount of %.2f", pClubMember->pCustomerBase->name, totalPrice, precentDis);
+	}
 	return pCustomer;
 }
 

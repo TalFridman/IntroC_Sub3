@@ -62,7 +62,7 @@ int		addItemToCart(ShoppingCart* pCart, char* barcode, float price, int count)
 	return 1;
 }
 
-void	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT WHY FLOAT??????????????? (DOR CHANGE TO VOID)
+float	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT WHY FLOAT??????????????? 
 {
 	//ShoppingItem* pItem;
 	//NODE* pCartTemp = pCart->shoppingItemList.head.next;
@@ -78,7 +78,8 @@ void	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT W
 	}
 	*/
 	price = getTotalPrice(pCart);
-	printf("Total bill to pay: %.2f\n", price);
+	printf("Total bill to pay ");
+	return price;
 }
 
 

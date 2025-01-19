@@ -27,6 +27,11 @@ int	initCustomer(Customer* pCustomer)
 
 	getCustomerID(pCustomer);
 
+	pCustomer->pDerived = NULL;
+	pCustomer->vTable.print = printCustomer;
+	pCustomer->vTable.init = initCustomer;
+	//pCustomer->vTable.freeObject = freeCustomer;
+
 	return 1;
 	
 }
@@ -132,6 +137,16 @@ void pay(Customer* pCustomer)
 		return;
 	printf("---------- Cart info and bill for %s ----------\n", pCustomer->name);
 	printShoppingCart(pCustomer->pCart);
+	/*ADD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	float totalPrice = printShoppingCart(pCustomer->pCart);
+	if (!pCustomer->pDerived)
+		printf("for %s is %.2f", pCustomer->name, totalPrice);
+	else
+	{
+		const ClubMember* pClubMember = (ClubMember*)pCustomer->pDerived;
+		float precentDis = calculatePrice(pClubMember, &totalPrice);
+		printf("for %s if %.2f, after discount of %.2f", pClubMember->pCustomerBase->name, totalPrice, precentDis);
+	}*/
 	printf("!!! --- Payment was recived!!!! --- \n");
 	freeShoppingCart(pCustomer->pCart);
 	free(pCustomer->pCart);
@@ -166,3 +181,4 @@ void freeCustomer(Customer* pCust)
 	pCust->name = NULL;
 	pCust->pCart = NULL;
 }
+
