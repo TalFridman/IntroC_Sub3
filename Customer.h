@@ -7,7 +7,7 @@
 #define NAMES_SEP " "
 #define NAME_PARTS_SEP "- "
 
-typedef struct
+typedef struct Customer_
 {
 	char*			id;
 	char*			name;
@@ -17,6 +17,7 @@ typedef struct
 }Customer;
 
 int		initCustomer(Customer* pCustomer);
+void initCustomerVTable(Customer* pCustomer);
 void	getCustomerID(Customer* pCustomer);
 void	printCustomer(const Customer* pCustomer);
 

@@ -129,35 +129,41 @@ int isCustomerIdUnique(const SuperMarket* pMarket, const char* id)
 	return 1; // ID is unique
 }
 
-int		addCustomer(SuperMarket* pMarket)
+int		addCustomer(SuperMarket* pMarket)                                        // CHANGED TO FREEOBJECT.VTABLE ??????????????
 {
 	Customer cust = { 0 };
 	char choice;
+	int notFirstLoop = 0;
 	printf("Are you club member? y/Y\n");
 	scanf(" %c", &choice);
-	if (tolower(choice) == 'y')
-	{
-		initCustomer(&cust);
-		//add club member customer  ????
-	}
-	else
-	{
+	do {
+		if (notFirstLoop)
+			cust.vTable.freeObject(&cust);
 
-		do {
-			freeCustomer(&cust);
+		if (tolower(choice) != 'y')
+		{
 			if (!initCustomer(&cust))
 			{
 				freeCustomer(&cust);
 				return 0;
 			}
-		} while (!isCustomerIdUnique(pMarket, cust.id));
-
-		if (isCustomerInMarket(pMarket, &cust))
-		{
-			printf("This customer already in market\n");
-			free(cust.name);
-			return 0;
 		}
+		else
+		{
+			if (!initClubMember(&cust))                                           // WHICH FREE IS THE RIGHT ONE ?????????????????????
+			{
+				freeClubMember(&cust);
+				return 0;
+			}
+		}
+		notFirstLoop++;
+	} while (!isCustomerIdUnique(pMarket, cust.id));
+
+	if (isCustomerInMarket(pMarket, &cust))
+	{
+		printf("This customer already in market\n");
+		free(cust.name);
+		return 0;
 	}
 
 	pMarket->customerArr = (Customer*)safeRealloc(pMarket->customerArr, (pMarket->customerCount + 1) * sizeof(Customer));
@@ -220,12 +226,12 @@ Customer*	doPrintCart(SuperMarket* pMarket)                            // ASK EF
 	}
 	float totalPrice = printShoppingCart(pCustomer->pCart);
 	if (!pCustomer->pDerived)
-		printf("for %s is %.2f", pCustomer->name, totalPrice);
+		printf("for %s is %.2f\n", pCustomer->name, totalPrice);
 	else
 	{
-		const ClubMember* pClubMember = (ClubMember*)pCustomer->pDerived;
-		float precentDis = calculatePrice(pClubMember, &totalPrice);
-		printf("for %s if %.2f, after discount of %.2f", pClubMember->pCustomerBase->name, totalPrice, precentDis);
+		ClubMember* pClubMember = (ClubMember*)pCustomer->pDerived;
+		float precentDis = calculatePrice(pClubMember, &totalPrice); 
+		printf("for %s is %.2f, after discount of %.2f %%\n", pCustomer ->name , totalPrice, precentDis);
 	}
 	return pCustomer;
 }
@@ -246,7 +252,8 @@ int	manageShoppingCart(SuperMarket* pMarket)
 	getchar(); //clean the enter
 
 	if (answer == 'y' || answer == 'Y')
-		pay(pCustomer);
+		//pay(pCustomer);
+		pCustomer->vTable.pay(pCustomer);
 	else {
 		clearCart(pMarket, pCustomer);
 		cancelShopping(pCustomer);
@@ -296,7 +303,7 @@ void	printAllCustomers(const SuperMarket* pMarket)
 {
 	printf("There are %d listed customers\n", pMarket->customerCount);
 	for (int i = 0; i < pMarket->customerCount; i++)
-		printCustomer(&pMarket->customerArr[i]);
+		pMarket->customerArr[i].vTable.print(&pMarket->customerArr[i]);
 }
 
 
@@ -434,7 +441,7 @@ void freeProducts(SuperMarket* pMarket)
 void freeCustomers(SuperMarket* pMarket)
 {
 	for (int i = 0; i < pMarket->customerCount; i++)
-		freeCustomer(&pMarket->customerArr[i]);
+		pMarket->customerArr[i].vTable.freeObject(&pMarket->customerArr[i]);
 	free(pMarket->customerArr);
 }
 

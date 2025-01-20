@@ -8,5 +8,8 @@ typedef struct
 }ClubMember;
 
 int		initClubMember(Customer* pCustomer);
-void	printClubMemebr(Customer* pCustomer);
-float	calculatePrice(ClubMember* pClubMember, int* totalPrice);    //BY REFERENCE
+void	initClubMemberVTable(Customer* pCustomer);
+void	printClubMemebr(const Customer* pCustomer);
+float	calculatePrice(const ClubMember* pClubMember, float* totalPrice);    //BY REFERENCE
+void	payForClubMember(Customer* pCustomer);
+void	freeClubMember(Customer* pCustomer);
