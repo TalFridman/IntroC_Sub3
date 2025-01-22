@@ -212,3 +212,93 @@ int		compareProductByCount(const void* pP1, const void* pP2)
 	const Product* Product2 = *(Product**)pP2;
 	return Product1->count - Product2->count;
 }
+
+int		writeProductFromBinaryFile(const Product* pProd, FILE* fp)
+{
+	if (fwrite(pProd, sizeof(Product), 1, fp) != 1)
+		return 0;
+	return 1;
+
+	/*int nameLen = strlen(pProd->name) + 1;
+	int typeLen = strlen(pProd->type) + 1;
+	if (fwrite(&pProd->name, sizeof(char), nameLen, fp) != nameLen)
+		return 0;
+	if (fwrite(&pProd->barcode, sizeof(char), BARCODE_LENGTH + 1, fp) != BARCODE_LENGTH + 1)
+		return 0;
+	if (fwrite(&pProd->type, sizeof(char), typeLen , fp) != typeLen)
+		return 0;
+	if (fwrite(&pProd->price, sizeof(float), 1, fp) != 1)
+		return 0;
+	if (fwrite(&pProd->count, sizeof(int), 1, fp) != 1)
+		return 0;
+	if (fwrite(&pProd->expiryDate, sizeof(Date), 1, fp) != 1)
+		return 0;*/
+
+	return 1;
+}
+
+int			readProductFromBinaryFile(Product* pProd, FILE* fp)
+{
+	if (fread(pProd, sizeof(Product), 1, fp) != 1)
+		return 0;
+	return 1;
+}
+
+int			writeProductArrFromBinaryFile(const char* fileName, Product* proArr, int count)
+{
+	FILE* fp;
+	fp = fopen(fileName, "wb");
+	if (!fp)
+		return 0;
+	//ADD FSEEK
+	if (fwrite(&count, sizeof(int), 1, fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	for (int i = 0; i < count; i++)
+	{
+		if (!writeProductFromBinaryFile(&proArr[i],fp))
+		{
+			fclose(fp);
+			return 0;
+		}
+	}
+
+	fclose(fp);
+	return 1;
+}
+
+Product*	readProductArrFromBinaryFile(const char* fileName, int* pCount)
+{
+	Product* proArr = NULL;
+	FILE* fp;
+	fp = fopen(fileName, "rb");
+	if (!fp)
+		return NULL;
+	//ADD FSEEK 
+	if (fread(pCount,sizeof(int), 1,fp) != 1)
+	{
+		fclose(fp);
+		return NULL;
+	}
+	proArr = (Product*)malloc(sizeof(Product) * (*pCount));
+	if (!proArr)
+	{
+		fclose(fp);
+		return NULL;
+	}
+	for (int i = 0; i < *pCount; i++)
+	{
+		if (!readProductFromBinaryFile(&proArr[i], fp))
+		{
+			free(proArr);
+			fclose(fp);
+			return 0;
+		}
+	}
+
+	fclose(fp);
+
+	return proArr;
+}
