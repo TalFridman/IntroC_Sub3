@@ -716,6 +716,7 @@ Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount
 	}
 
 	int isClubM;
+	int totalMonths = 0;
 
 	for (int i = 0; i < *pCustomersCount; i++)
 	{
@@ -742,7 +743,11 @@ Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount
 		}
 		if (isClubM)
 		{
-			if(!readClubMemberFromTxt(fp, &custArr[i]))
+			//פה עשיתי שינוי
+			custArr[i].pDerived = (ClubMember*)malloc(sizeof(ClubMember));
+			//צריך להוסיף את התנאי עם כל השחרורים
+			ClubMember* pClubM = (ClubMember*)custArr[i].pDerived;
+			if(fscanf(fp, "%d", &totalMonths) != 1)
 			{
 				for (int j = 0; j < i; j++)
 				{
@@ -752,7 +757,16 @@ Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount
 				fclose(fp);
 				return NULL;
 			}
+			//עשיתי פה כמו שעושים איניט לקלאב ממבר
+			pClubM->totalMonths = totalMonths;
+			initClubMemberVTable(&custArr[i]);//ידוע שהוא חבר מועדון אז כדי ששאר הפונקציות של ויטייבל יעבדו עליו חייב לעשות איניט(כמו הפונקציית הדפסת לקוח
+			pClubM->pCustomerBase = &custArr[i];
 		}
+		else
+		{
+			initCustomerVTable(&custArr[i]);  //אותו הדבר כמו בקלאב ממבר
+		}
+		//עד לפה
 	}
 
 	fclose(fp);
