@@ -593,3 +593,168 @@ void	productSearchGeneric(SuperMarket* pMarket, int (*compare)(const void*, cons
 	}
 	
 }
+
+int		writeAllSuperMarketToBinaryFile(const char* fileName, SuperMarket* pMarket)
+{
+	FILE* fp;
+	fp = fopen(fileName, "wb");
+	if (!fp)
+		return 0;
+	int nameLen = (int)strlen(pMarket->name) + 1;
+	if (fwrite(&nameLen, sizeof(int), 1, fp) != 1)
+	{
+		fclose(fp);
+		return 0;
+	}
+	if (fwrite(pMarket->name, sizeof(char), nameLen, fp) != nameLen)
+	{
+		fclose(fp);
+		return 0;
+	}
+	if(!writeProductArrToBinaryFile(fp, pMarket->productArr, pMarket->productCount))
+	{
+		fclose(fp);
+		return 0;
+	}
+	return 1;
+}
+
+SuperMarket*	readAllSuperMarketFromBinaryFile(const char* fileName)
+{
+	FILE* fp;
+	fp = fopen(fileName, "rb");
+	if (!fp)
+		return NULL;
+
+	SuperMarket* pMarket = (SuperMarket*)malloc(sizeof(SuperMarket));
+
+	if (!pMarket)
+	{
+		fclose(fp);
+		return NULL;
+	}
+
+	pMarket->productArrSortBy = eNumOfSorts;       // Default - Non Sorted!
+	pMarket->customerArr = NULL;
+	pMarket->customerCount = 0;
+
+	int nameLen;
+
+	if(fread(&nameLen, sizeof(int), 1, fp) != 1)
+	{
+		free(pMarket);
+		fclose(fp);
+		return NULL;
+	}
+
+	pMarket->name = (char*)malloc(sizeof(char) * nameLen + 1);
+	if(!pMarket->name)
+	{
+		free(pMarket);
+		fclose(fp);
+		return NULL;
+	}
+
+	if(fread(pMarket -> name, sizeof(char), nameLen, fp) != nameLen) 
+	{
+		free(pMarket->name);
+		free(pMarket);
+		fclose(fp);
+		return NULL;
+	}
+
+	pMarket->productArr = readProductArrFromBinaryFile(fp, &pMarket->productCount);
+
+	if (!pMarket->productArr)
+	{
+		freeProducts(pMarket);
+		free(pMarket->name);
+		free(pMarket);
+		fclose(fp);
+		return NULL;
+	}
+
+	fclose(fp);
+	return pMarket;
+}
+
+int		writeAllCustomersToTextFile(const char* fileName, SuperMarket* pMarket)
+{
+	FILE* fp;
+	fp = fopen(fileName, "w");
+	if (!fp)
+		return 0;
+
+	fprintf(fp, "%d\n", pMarket->customerCount);              // MAYBE & FOR FPRINTF
+
+	for (int i = 0; i < pMarket->customerCount ; i++)
+	{
+		pMarket->customerArr[i].vTable.writeToTxt(fp, &pMarket->customerArr[i]);
+	}
+	fclose(fp);
+	return 1;
+}
+
+Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount)
+{
+	FILE* fp;
+	fp = fopen(fileName, "r");
+	if (!fp)
+		return NULL;
+
+	if (fscanf(fp, "%d", pCustomersCount) != 1)
+	{
+		fclose(fp);
+		return NULL;
+	}
+
+	Customer* custArr = (Customer*)calloc(*pCustomersCount , sizeof(Customer));
+	if (!custArr)
+	{
+		fclose(fp);
+		return NULL;
+	}
+
+	int isClubM;
+
+	for (int i = 0; i < *pCustomersCount; i++)
+	{
+	
+		if (!readCustomerFromTxt(fp, &custArr[i]))
+		{
+			for (int j = 0; j < i; j++)
+			{
+				freeCustomer(&custArr[i]);
+			}
+			free(custArr);
+			fclose(fp);
+			return NULL;
+		}
+		if(fscanf(fp, "%d", &isClubM) != 1)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				freeCustomer(&custArr[i]);
+			}
+			free(custArr);
+			fclose(fp);
+			return NULL;
+		}
+		if (isClubM)
+		{
+			if(!readClubMemberFromTxt(fp, &custArr[i]))
+			{
+				for (int j = 0; j < i; j++)
+				{
+					freeCustomer(&custArr[i]);
+				}
+				free(custArr);
+				fclose(fp);
+				return NULL;
+			}
+		}
+	}
+
+	fclose(fp);
+	return custArr;
+}

@@ -55,3 +55,9 @@ eSort	getSortedType();
 void	searchProductByAtt(SuperMarket* pMarket);
 
 void	productSearchGeneric(SuperMarket* pMarket, int (*compare)(const void*, const void*));
+
+SuperMarket* readAllSuperMarketFromBinaryFile(const char* fileName);
+int		writeAllSuperMarketToBinaryFile(const char* fileName, SuperMarket* pMarket);
+
+int		writeAllCustomersToTextFile(const char* fileName, SuperMarket* pMarket);
+Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount);

@@ -40,3 +40,9 @@ int		compareProductByName(const void* pP1, const void* pP2);
 int		compareProductByPrice(const void* pP1, const void* pP2);
 int		compareProductByCount(const void* pP1, const void* pP2);
 
+
+int		writeProductArrToBinaryFile(FILE* fp, Product** proArr, int count);
+Product** readProductArrFromBinaryFile(FILE* fp, int* pCount);
+
+int		writeProductToBinaryFile(const Product* pProd, FILE* fp);
+int			readProductFromBinaryFile(Product* pProd, FILE* fp);

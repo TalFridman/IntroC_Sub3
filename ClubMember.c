@@ -42,6 +42,8 @@ void initClubMemberVTable(Customer* pCustomer)
 	pCustomer->vTable.print = printClubMemebr;
 	pCustomer->vTable.pay = payForClubMember;
 	pCustomer->vTable.freeObject = freeClubMember;
+	//pCustomer->vTable.readFromTxt = readClubMemberFromTxt;
+	pCustomer->vTable.writeToTxt = writeClubMemberToTxt;
 }
 
 void printClubMemebr(const Customer* pCustomer)
@@ -85,3 +87,21 @@ void freeClubMember(Customer* pCustomer)
 		free(pCustomer->pDerived);
 	freeCustomer(pCustomer);
 }
+
+int readClubMemberFromTxt(FILE* fp, Customer* pCustomer)
+{
+	//int isClubM;
+	//readCustomerFromTxt(fp, pCustomer);
+	ClubMember* pClubM = (ClubMember*)pCustomer->pDerived;
+	if (fscanf(fp, "%d", &pClubM->totalMonths) != 1)
+		return 0;
+	return 1;
+}
+
+void writeClubMemberToTxt(FILE* fp, Customer* pCustomer)
+{
+	writeCustomerToTxt(fp,pCustomer);
+	const ClubMember* pClubM = (ClubMember*)pCustomer->pDerived;
+	fprintf(fp, "%d %d", 1, pClubM->totalMonths);
+}
+

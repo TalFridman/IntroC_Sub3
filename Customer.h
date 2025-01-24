@@ -32,5 +32,8 @@ void	cancelShopping(Customer* pCustomer);
 
 void	freeCustomer(Customer* pCust);
 
+int		readCustomerFromTxt(FILE* fp, Customer* pCust);
+void	writeCustomerToTxt(FILE* fp, Customer* pCust);
+
 
 

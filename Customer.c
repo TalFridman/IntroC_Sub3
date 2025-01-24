@@ -41,6 +41,8 @@ void initCustomerVTable(Customer* pCustomer)
 	pCustomer->vTable.init = initCustomer;
 	pCustomer->vTable.pay = pay;
 	pCustomer->vTable.freeObject = freeCustomer;
+	//pCustomer->vTable.readFromTxt = readCustomerFromTxt;
+	pCustomer->vTable.writeToTxt = writeCustomerToTxt;
 }
 
 void getCustomerID(Customer* pCustomer)
@@ -177,5 +179,42 @@ void freeCustomer(Customer* pCust)
 	pCust->id = NULL;
 	pCust->name = NULL;
 	pCust->pCart = NULL;
+}
+
+int readCustomerFromTxt(FILE* fp, Customer* pCust)
+{
+	//int notDerived;
+	char tempFirstName[MAX_STR_LEN] = { 0 };
+	char temp[MAX_STR_LEN] = { 0 };
+	char tempLastName[MAX_STR_LEN] = { 0 };
+	char tempId[MAX_STR_LEN] = { 0 };
+	if (fscanf(fp, "%s	%s	%s	%s", tempFirstName, temp, tempLastName, tempId) != 4)
+		return 0;
+	int fullNameLen = (int)(strlen(tempFirstName) + strlen(temp) + strlen(tempLastName)) + 1;
+	pCust->name = (char*)malloc(sizeof(char) * fullNameLen);
+	if (!pCust->name)
+		return 0;
+	pCust-> id = (char*)malloc(sizeof(char) * strlen(tempId) + 1);
+	if (!pCust->id)
+	{
+		free(pCust->name);
+		return 0;
+	}
+	strcpy(pCust->name, tempFirstName);
+	strcat(pCust->name, temp);
+	strcat(pCust->name, tempLastName);
+	strcpy(pCust->id, tempId);
+
+	//if (!pCust->pDerived)
+	//	fscanf(fp, "%d\n", &notDerived);
+
+	return 1;
+}
+
+void writeCustomerToTxt(FILE* fp, Customer* pCust)
+{
+	fprintf(fp, "%s\n%s\n", pCust->name, pCust->id);
+	if (!pCust->pDerived)
+		fprintf(fp, "%d\n", 0);
 }
 

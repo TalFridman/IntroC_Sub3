@@ -6,17 +6,35 @@
 #include "General.h"
 #include "Supermarket.h"
 
+#define BIN_FILE "SuperMarket.bin"
+#define TEXT_FILE "Customers.txt"
+
 int main()
 {
-	SuperMarket	market;
-
 	srand((unsigned int)time(NULL));
 
-	if (!initSuperMarket(&market))
+	SuperMarket	market = *readAllSuperMarketFromBinaryFile(BIN_FILE);
+
+	if (!&market)
 	{
-		printf("error init Super Market");
-		return 0;
+		if (!initSuperMarket(&market))
+		{
+			printf("error init Super Market\n");
+			return 0;
+		}
+		else
+			printf("Error open super market file!\n");
 	}
+	else
+		printf("SuperMarket succsesfully loaded from files!\n");
+
+	market.customerArr = readAllCustomersFromTxtFile(TEXT_FILE, &market.customerCount);
+	if (!&market.customerArr)
+	{
+		printf("Error open customer file!\n");
+	}
+	else
+		printf("Customer succsesfully loaded from files!\n");
 
 	int option;
 	int stop = 0;
@@ -77,7 +95,12 @@ int main()
 		}
 	} while (!stop);
 
+	if(!writeAllCustomersToTextFile(TEXT_FILE, &market))
+		printf("Error in write all customers to text file!\n");
 
+	if (!writeAllSuperMarketToBinaryFile(BIN_FILE, &market))
+		printf("Error in write all supermarket to binary file!\n");
+	
 	freeMarket(&market);
 	
 	return 1;
