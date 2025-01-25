@@ -48,7 +48,7 @@ Product*	getProductAndCount(SuperMarket* pMarket, int* pCount);
 
 void		freeMarket(SuperMarket* pMarket);
 void		freeProducts(SuperMarket* pMarket);
-void		freeCustomers(SuperMarket* pMarket);
+void		freeCustomers(Customer* pCustomersArr, int numOfCustomers);
 
 void	sortProductsByAtt(SuperMarket* pMarket);
 eSort	getSortedType();

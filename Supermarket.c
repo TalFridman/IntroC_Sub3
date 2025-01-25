@@ -206,13 +206,10 @@ int	doShopping(SuperMarket* pMarket)
 			return 0;
 		initCart(pCustomer->pCart);
 	}
-	fillCart(pMarket, pCustomer->pCart);
-	//if (pCustomer->pCart->count == 0)                                            
+	fillCart(pMarket, pCustomer->pCart);                                            
 	NODE* temp = pCustomer->pCart->shoppingItemList.head.next;
 	if(!(temp))                                                                    //did not buy any thing
 	{
-		//free(pCustomer->pCart);
-		//pCustomer->pCart = NULL;
 		freeShoppingCart(pCustomer->pCart);                                              
 		pCustomer->pCart->shoppingItemList.head.next = NULL;
 	}
@@ -220,7 +217,7 @@ int	doShopping(SuperMarket* pMarket)
 	return 1;
 }
 
-Customer*	doPrintCart(SuperMarket* pMarket)                            // ASK EFRAT WHY REUTRN CUSTOMER POINTER
+Customer*	doPrintCart(SuperMarket* pMarket)                            
 {
 	Customer* pCustomer = getCustomerShopPay(pMarket);
 	if (!pCustomer)
@@ -300,9 +297,6 @@ void	printAllProducts(const SuperMarket* pMarket)
 	printf("-------------------------------------------------------------------------------------------------\n");
 
 	generalArrayFunction(pMarket->productArr, pMarket->productCount, sizeof(Product*), printProduct);
-
-	//for (int i = 0; i < pMarket->productCount; i++)
-		//printProduct(pMarket->productArr[i]);
 }
 
 void	printAllCustomers(const SuperMarket* pMarket)
@@ -431,7 +425,7 @@ void	freeMarket(SuperMarket* pMarket)
 {
 	free(pMarket->name);
 	freeProducts(pMarket);
-	freeCustomers(pMarket);
+	freeCustomers(pMarket->customerArr, pMarket->customerCount);
 }
 
 void freeProducts(SuperMarket* pMarket)
@@ -444,11 +438,11 @@ void freeProducts(SuperMarket* pMarket)
 	free(pMarket->productArr);
 }
 
-void freeCustomers(SuperMarket* pMarket)
+void freeCustomers(Customer* pCustomersArr, int numOfCustomers)
 {
-	for (int i = 0; i < pMarket->customerCount; i++)
-		pMarket->customerArr[i].vTable.freeObject(&pMarket->customerArr[i]);
-	free(pMarket->customerArr);
+	for (int i = 0; i < numOfCustomers ; i++)
+		pCustomersArr[i].vTable.freeObject(&pCustomersArr[i]);
+	free(pCustomersArr);
 }
 
 void sortProductsByAtt(SuperMarket* pMarket)
@@ -720,61 +714,35 @@ Customer* readAllCustomersFromTxtFile(const char* fileName, int* pCustomersCount
 		fclose(fp);
 		return NULL;
 	}
-
-	int isClubM;
-	int totalMonths = 0;
-
 	for (int i = 0; i < *pCustomersCount; i++)
 	{
 	
 		if (!readCustomerFromTxt(fp, &custArr[i]))
 		{
-			for (int j = 0; j < i; j++)
-			{
-				freeCustomer(&custArr[i]);
-			}
-			free(custArr);
+			freeCustomers(custArr, i);
 			fclose(fp);
 			return NULL;
 		}
+		
+		int isClubM;
 		if(fscanf(fp, "%d", &isClubM) != 1)
 		{
-			for (int j = 0; j < i; j++)
-			{
-				freeCustomer(&custArr[i]);
-			}
-			free(custArr);
+			freeCustomers(custArr, i);
 			fclose(fp);
 			return NULL;
 		}
-		if (isClubM)
+		if (!isClubM)
+			initCustomerVTable(&custArr[i]);  
+		else
 		{
-			//פה עשיתי שינוי
-			custArr[i].pDerived = (ClubMember*)malloc(sizeof(ClubMember));
-			//צריך להוסיף את התנאי עם כל השחרורים
-			ClubMember* pClubM = (ClubMember*)custArr[i].pDerived;
-			if(fscanf(fp, "%d", &totalMonths) != 1)
+			if (!readClubMemberFromTxt(fp, &custArr[i]))
 			{
-				for (int j = 0; j < i; j++)
-				{
-					freeCustomer(&custArr[i]);
-				}
-				free(custArr);
+				freeCustomers(custArr, i);
 				fclose(fp);
 				return NULL;
 			}
-			//עשיתי פה כמו שעושים איניט לקלאב ממבר
-			pClubM->totalMonths = totalMonths;
-			initClubMemberVTable(&custArr[i]);//ידוע שהוא חבר מועדון אז כדי ששאר הפונקציות של ויטייבל יעבדו עליו חייב לעשות איניט(כמו הפונקציית הדפסת לקוח
-			pClubM->pCustomerBase = &custArr[i];
 		}
-		else
-		{
-			initCustomerVTable(&custArr[i]);  //אותו הדבר כמו בקלאב ממבר
-		}
-		//עד לפה
 	}
-
 	fclose(fp);
 	return custArr;
 }

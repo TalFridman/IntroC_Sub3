@@ -60,3 +60,4 @@ char* getDateStr(const Date* pDate)
 	sprintf(str, "%02d/%02d/%04d", pDate->day, pDate->month, pDate->year);
 	return str;
 }
+

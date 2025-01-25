@@ -55,7 +55,7 @@ NODE* L_insert(NODE* pNode, DATA Value)
 // Input:	pointer to the node BEFORE the node to be deleted 
 // Output:	TRUE if succeeded
 //////////////////////////////////////////////////////////////
-BOOL L_delete(NODE* pNode, void (*freeFunction)(void*))					//ask efrat if neccesery
+BOOL L_delete(NODE* pNode, void (*freeFunction)(void*))					
 {
 	NODE* tmp;
 	if (!pNode)
@@ -100,7 +100,7 @@ BOOL L_delete(NODE* pNode, void (*freeFunction)(void*))					//ask efrat if necce
 // Input:	pointer to the list structure
 // Output:	TRUE if succeeded
 ////////////////////////////////////////////////
-BOOL L_free(LIST* pList, void (*freeFunction)(void*))					//ask efrat if neccesery
+BOOL L_free(LIST* pList, void (*freeFunction)(void*))					
 {
 	NODE* tmp;
 	BOOL cont = True;

@@ -43,18 +43,11 @@ int		addItemToCart(ShoppingCart* pCart, char* barcode, float price, int count)
 		if (!pItem)
 			return 0;
 
-		//ShoppingItem** tempArr = (ShoppingItem**)realloc(pCart->itemArr, (pCart->count + 1) * sizeof(ShoppingItem*));
 		NODE* tempNode = whereToPut(pCart, barcode);
 		if (!L_insert(tempNode, pItem)) {
 			freeShoppingCart(pCart);
 			return 0;
 		}
-		//pCart->itemArr = tempArr;
-
-		//pCart->itemArr[pCart->count] = pItem;
-		//pCart->count++;
-		
-
 	}
 	else {
 		pItem->count += count;
@@ -62,21 +55,11 @@ int		addItemToCart(ShoppingCart* pCart, char* barcode, float price, int count)
 	return 1;
 }
 
-float	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT WHY FLOAT??????????????? 
+float	printShoppingCart(const ShoppingCart* pCart)                
 {
-	//ShoppingItem* pItem;
-	//NODE* pCartTemp = pCart->shoppingItemList.head.next;
+
 	float price = 0;
 	L_print(&(pCart->shoppingItemList), printItem);
-	/*
-	while (pCartTemp != NULL)
-	{
-		pItem = pCartTemp->key;
-		printItem(pItem);
-		price += (pItem->price * pItem->count);
-		pCartTemp = pCartTemp->next;
-	}
-	*/
 	price = getTotalPrice(pCart);
 	printf("Total bill to pay ");
 	return price;
@@ -85,7 +68,6 @@ float	printShoppingCart(const ShoppingCart* pCart)                 // ASK EFRAT 
 
 ShoppingItem*	getItemByBarocde(ShoppingCart* pCart, char* barcode)
 {  
-	//DOR ADDED!!!!!!!!!!!!!!!!
 	NODE* temp = &pCart->shoppingItemList.head;
 	if (!temp->next)
 		return NULL;
@@ -93,14 +75,6 @@ ShoppingItem*	getItemByBarocde(ShoppingCart* pCart, char* barcode)
 	if (!temp2)
 		return NULL;
 	return temp2->key;
-	/*
-	for (int i = 0; i < pCart->count; i++)
-	{
-		if (strcmp(pCart->itemArr[i]->barcode,barcode) == 0)
-			return pCart->itemArr[i];
-	}
-	return NULL;
-	*/
 }
 
 

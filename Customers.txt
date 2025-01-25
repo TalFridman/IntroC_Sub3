@@ -1,4 +1,4 @@
-9
+4
 Moshe - Cohen
 121212121
 1 45
@@ -7,22 +7,7 @@ Shir - Levi
 0
 Dor - Zhavian
 123456789
-1 40
+1 35
 Tal - Fridman
 987654321
-0
-Miki - Piki
-159357825
-1 55
-Momo - Hamomo
-111111111
-0
-Bino - Shino
-888888888
-1 60
-Kiki - Titi
-333333333
-1 60
-Chiko - Diko
-666666666
 0

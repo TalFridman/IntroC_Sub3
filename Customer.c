@@ -41,7 +41,6 @@ void initCustomerVTable(Customer* pCustomer)
 	pCustomer->vTable.init = initCustomer;
 	pCustomer->vTable.pay = pay;
 	pCustomer->vTable.freeObject = freeCustomer;
-	//pCustomer->vTable.readFromTxt = readCustomerFromTxt;
 	pCustomer->vTable.writeToTxt = writeCustomerToTxt;
 }
 
@@ -183,7 +182,6 @@ void freeCustomer(Customer* pCust)
 
 int readCustomerFromTxt(FILE* fp, Customer* pCust)
 {
-	//int notDerived;
 	char tempFirstName[MAX_STR_LEN] = { 0 };
 	char temp[MAX_STR_LEN] = { 0 };
 	char tempLastName[MAX_STR_LEN] = { 0 };
@@ -207,16 +205,7 @@ int readCustomerFromTxt(FILE* fp, Customer* pCust)
 		return 0;
 	pCust->name = combineName;
 
-	//strcpy(pCust->name, tempFirstName);
-	//strcat(pCust->name, " ");
-	//strcat(pCust->name, temp);
-	//strcat(pCust->name, " ");
-	//strcat(pCust->name, tempLastName);
-
 	strcpy(pCust->id, tempId);
-
-	//if (!pCust->pDerived)
-	//	fscanf(fp, "%d\n", &notDerived);
 
 	return 1;
 }

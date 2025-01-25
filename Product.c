@@ -11,7 +11,6 @@
 static const char* typeStr[eNofProductType] = { "Fruit Vegtable", "Fridge", "Frozen", "Shelf" };
 static const char* typePrefix[eNofProductType] = { "FV", "FR", "FZ", "SH" };
 
-
 void	initProduct(Product* pProduct)
 {
 	initProductNoBarcode(pProduct);

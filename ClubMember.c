@@ -12,7 +12,7 @@ int initClubMember(Customer* pCustomer)
 
 	pCustomer -> pDerived = (ClubMember*)malloc(sizeof(ClubMember));
 
-	if (!pCustomer->pDerived)                                             /// IF NECCESERY TO ADD - || !pClubM     ASK EFRAT!!!!!!!!
+	if (!pCustomer->pDerived)                                             
 	{
 		freeCustomer(pCustomer);
 		return 0;
@@ -42,7 +42,6 @@ void initClubMemberVTable(Customer* pCustomer)
 	pCustomer->vTable.print = printClubMemebr;
 	pCustomer->vTable.pay = payForClubMember;
 	pCustomer->vTable.freeObject = freeClubMember;
-	//pCustomer->vTable.readFromTxt = readClubMemberFromTxt;
 	pCustomer->vTable.writeToTxt = writeClubMemberToTxt;
 }
 
@@ -59,7 +58,11 @@ float calculatePrice(const ClubMember* pClubMember, float* totalPrice)
 	if (pClubMember->totalMonths < 24)
 		precentsDis = (pClubMember->totalMonths) * 0.1f;
 	else if (pClubMember->totalMonths < 60)
-		precentsDis = 2.5f + ((float)(pClubMember->totalMonths) / 12) * 0.5f;
+	{
+		precentsDis = 2.5f + (float)((pClubMember->totalMonths ) / 12) * 0.5f;
+		if (precentsDis > 4.5f)
+			precentsDis = 4.5f;
+	}
 	else
 		precentsDis = 7.5f;
 	*totalPrice -= (*totalPrice) * (precentsDis / 100);
@@ -90,11 +93,14 @@ void freeClubMember(Customer* pCustomer)
 
 int readClubMemberFromTxt(FILE* fp, Customer* pCustomer)
 {
-	//int isClubM;
-	//readCustomerFromTxt(fp, pCustomer);
+	pCustomer -> pDerived = (ClubMember*)malloc(sizeof(ClubMember));
+	if (!pCustomer->pDerived)
+		return 0;
 	ClubMember* pClubM = (ClubMember*)pCustomer->pDerived;
 	if (fscanf(fp, "%d", &pClubM->totalMonths) != 1)
 		return 0;
+	pClubM->pCustomerBase = pCustomer;
+	initClubMemberVTable(pCustomer);
 	return 1;
 }
 
