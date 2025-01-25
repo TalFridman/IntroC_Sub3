@@ -200,9 +200,19 @@ int readCustomerFromTxt(FILE* fp, Customer* pCust)
 		free(pCust->name);
 		return 0;
 	}
-	strcpy(pCust->name, tempFirstName);
-	strcat(pCust->name, temp);
-	strcat(pCust->name, tempLastName);
+
+	char* parts[2] = { tempFirstName,tempLastName };
+	char* combineName = combineFirstLast(parts);
+	if (!combineName)
+		return 0;
+	pCust->name = combineName;
+
+	//strcpy(pCust->name, tempFirstName);
+	//strcat(pCust->name, " ");
+	//strcat(pCust->name, temp);
+	//strcat(pCust->name, " ");
+	//strcat(pCust->name, tempLastName);
+
 	strcpy(pCust->id, tempId);
 
 	//if (!pCust->pDerived)

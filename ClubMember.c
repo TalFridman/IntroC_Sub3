@@ -102,6 +102,6 @@ void writeClubMemberToTxt(FILE* fp, Customer* pCustomer)
 {
 	writeCustomerToTxt(fp,pCustomer);
 	const ClubMember* pClubM = (ClubMember*)pCustomer->pDerived;
-	fprintf(fp, "%d %d", 1, pClubM->totalMonths);
+	fprintf(fp, "%d %d\n", 1, pClubM->totalMonths);
 }
 

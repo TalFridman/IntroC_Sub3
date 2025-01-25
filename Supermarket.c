@@ -129,18 +129,24 @@ int isCustomerIdUnique(const SuperMarket* pMarket, const char* id)
 	return 1; // ID is unique
 }
 
-int		addCustomer(SuperMarket* pMarket)                                        // CHANGED TO FREEOBJECT.VTABLE ??????????????
+int		addCustomer(SuperMarket* pMarket)                                      
 {
 	Customer cust = { 0 };
-	char choice;
+	int choice = -1;
 	int notFirstLoop = 0;
-	printf("Are you club member? y/Y\n");
-	scanf(" %c", &choice);
+
+	printf("Is the customer club member? 1 for yes 0 for no\n");
+	do {
+		scanf("%d", &choice);
+		if (choice != 0 && choice != 1)
+			printf("Invalid input! please enter 1 for yes 0 for no\n");
+	} while (choice != 0 && choice != 1);
+
 	do {
 		if (notFirstLoop)
 			cust.vTable.freeObject(&cust);
 
-		if (tolower(choice) != 'y')
+		if (choice == 0)
 		{
 			if (!initCustomer(&cust))
 			{
@@ -150,7 +156,7 @@ int		addCustomer(SuperMarket* pMarket)                                        //
 		}
 		else
 		{
-			if (!initClubMember(&cust))                                           // WHICH FREE IS THE RIGHT ONE ?????????????????????
+			if (!initClubMember(&cust))                                           
 			{
 				freeClubMember(&cust);
 				return 0;
@@ -685,7 +691,7 @@ int		writeAllCustomersToTextFile(const char* fileName, SuperMarket* pMarket)
 	if (!fp)
 		return 0;
 
-	fprintf(fp, "%d\n", pMarket->customerCount);              // MAYBE & FOR FPRINTF
+	fprintf(fp, "%d\n", pMarket->customerCount);            
 
 	for (int i = 0; i < pMarket->customerCount ; i++)
 	{
